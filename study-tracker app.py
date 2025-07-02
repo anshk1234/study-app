@@ -55,8 +55,14 @@ if bg_image_path.exists():
             color: #ffffffcc !important;
         }}
         header[data-testid="stHeader"] {{
-            display: none !important;
+            background-color: transparent !important;
+            box-shadow: none !important;
+            height: 0px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border: none !important;
         }}
+        
         </style>
         """,
         unsafe_allow_html=True
