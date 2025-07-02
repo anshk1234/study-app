@@ -11,7 +11,8 @@ from minimal_pomodoro import show_minimal_pomodoro
 
 # --- Page Config ---
 st.set_page_config(page_title="📘 Productivity Hub", page_icon="⏳", layout="centered")
-
+with st.sidebar:
+    st.empty()  # 👈 forces sidebar to initialize visibly
 # --- Background Wallpaper (from local image) ---
 def get_base64(file_path):
     with open(file_path, "rb") as f:
