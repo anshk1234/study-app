@@ -12,7 +12,7 @@ from minimal_pomodoro import show_minimal_pomodoro
 # --- Page Config ---
 st.set_page_config(page_title="📘 Productivity Hub", page_icon="⏳", layout="centered")
 
-# --- Background Wallpaper ---
+# --- Background Wallpaper (from local image) ---
 def get_base64(file_path):
     with open(file_path, "rb") as f:
         return base64.b64encode(f.read()).decode()
@@ -21,40 +21,71 @@ bg_image_path = Path("image.jpg")
 if bg_image_path.exists():
     encoded_img = get_base64(bg_image_path)
     st.markdown(
-        f"""
-        <style>
-        html, body, .stApp {{
-            background-image: url("data:image/jpg;base64,{encoded_img}");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }}
+    f"""
+    <style>
+    html, body, .stApp {{
+        background-image: url("data:image/jpg;base64,{encoded_img}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        overflow-x: hidden;
+    }}
 
-        [data-testid="stAppViewContainer"],
-        [data-testid="stToolbar"],
-        [data-testid="stVerticalBlock"],
-        .main, .block-container {{
-            background: transparent !important;
-        }}
+    /* Transparent base layout */
+    [data-testid="stAppViewContainer"],
+    [data-testid="stToolbar"],
+    [data-testid="stVerticalBlock"],
+    .main, .block-container {{
+        background: transparent !important;
+        box-shadow: none !important;
+    }}
 
-        section[data-testid="stSidebar"] {{
-            background-color: rgba(255, 255, 255, 0.08) !important;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            box-shadow: inset 0 0 10px #ffffff20, 0 0 20px #ffffff40;
-            border-right: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px 0 0 12px;
-        }}
+    /* ✨ Translucent Sidebar with Blur */
+    section[data-testid="stSidebar"] {{
+        background-color: rgba(255, 255, 255, 0.08) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: inset 0 0 10px #ffffff20, 0 0 20px #ffffff40;
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px 0 0 12px;
+    }}
 
-        section[data-testid="stSidebar"] * {{
-            background-color: transparent !important;
-            color: #ffffffcc !important;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+    /* Match inner items for clean look */
+    section[data-testid="stSidebar"] * {{
+        background-color: transparent !important;
+        color: #ffffffcc !important;
+    }}
+
+    /* 🚫 Arrow / toggle removal (all cases) */
+    header[data-testid="stHeader"],
+    button[data-testid="collapsed-control"],
+    div[data-testid="collapsed-control"],
+    [data-testid*="collapsed-control"],
+    [title*="sidebar"],
+    [aria-label*="sidebar"],
+    [data-testid*="toggle"],
+    button[title="Toggle sidebar"],
+    button[title="Close sidebar"],
+    button[title="Open sidebar"] {{
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        pointer-events: none !important;
+        position: absolute !important;
+        z-index: -9999 !important;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # --- Sidebar Navigation ---
 with st.sidebar:
@@ -106,6 +137,7 @@ def save_todos(todos):
 # --- Sections ---
 if section == "✅ To-Do List":
     st.title("✅ To-Do List")
+
     if "todos" not in st.session_state:
         st.session_state.todos = load_todos()
 
