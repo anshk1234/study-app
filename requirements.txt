@@ -1,7 +1,12 @@
 streamlit
 pandas
 numpy
+datetime
+random
+json
+os
+base64
+pathlib
 matplotlib
-scikit-learn
 streamlit-option-menu
-minimal-pomodoro
+minimal_pomodoro
