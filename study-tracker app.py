@@ -1,4 +1,5 @@
 import streamlit as st
+import time
 import datetime
 import pandas as pd
 import random
@@ -8,81 +9,80 @@ import base64
 from pathlib import Path
 from streamlit_option_menu import option_menu
 from minimal_pomodoro import show_minimal_pomodoro
-import time
+
 # --- Page Config ---
 st.set_page_config(page_title="📘 Productivity Hub", page_icon="⏳", layout="centered")
 
-# --- Background Wallpaper (from local image) ---
+# --- Background Wallpaper ---
 def get_base64(file_path):
     with open(file_path, "rb") as f:
         return base64.b64encode(f.read()).decode()
 
-bg_image_path = Path("image.jpg")
+bg_image_path = Path("image.jpg")  # Make sure this is your wallpaper's filename
 if bg_image_path.exists():
     encoded_img = get_base64(bg_image_path)
-    time.sleep(0.2)  # ⏳ tiny pause before CSS injects
-
+    time.sleep(0.2)  # Tiny delay to stabilize layout on Streamlit Cloud
     st.markdown(
         f"""
         <style>
-/* 📸 Background Styling */
-html, body, .stApp {
-    background-image: url("data:image/jpg;base64,{encoded_img}");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-    overflow-x: hidden;
-}
+        html, body, .stApp {{
+            background-image: url("data:image/jpg;base64,{encoded_img}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+        }}
 
-/* 🔍 Transparent Sections */
-[data-testid="stAppViewContainer"],
-[data-testid="stToolbar"],
-[data-testid="stVerticalBlock"],
-.main, .block-container {
-    background: transparent !important;
-    box-shadow: none !important;
-}
+        [data-testid="stAppViewContainer"],
+        [data-testid="stToolbar"],
+        [data-testid="stVerticalBlock"],
+        .main, .block-container {{
+            background: transparent !important;
+            box-shadow: none !important;
+        }}
 
-/* 📚 Stylish Sidebar */
-section[data-testid="stSidebar"] {
-    background-color: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: inset 0 0 10px #ffffff20, 0 0 20px #ffffff40;
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px 0 0 12px;
-}
+        section[data-testid="stSidebar"] {{
+            background-color: rgba(255, 255, 255, 0.08) !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: inset 0 0 10px #ffffff20, 0 0 20px #ffffff40;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px 0 0 12px;
+        }}
 
-section[data-testid="stSidebar"] * {
-    background-color: transparent !important;
-    color: #ffffffcc !important;
-}
+        section[data-testid="stSidebar"] * {{
+            background-color: transparent !important;
+            color: #ffffffcc !important;
+        }}
 
-/* 👤 Optional: Hide Top Streamlit Header */
-header[data-testid="stHeader"] {
-    display: none !important;
-}
+        /* Hide top header */
+        header[data-testid="stHeader"] {{
+            display: none !important;
+        }}
 
-/* 🎛️ Fade Sidebar Toggle Button (not hidden, just quiet) */
-button[title="Toggle sidebar"],
-button[title="Open sidebar"],
-button[title="Close sidebar"] {
-    background-color: transparent !important;
-    opacity: 0.2 !important;
-    transition: opacity 0.3s ease;
-    color: #fff !important;
-}
-button[title="Toggle sidebar"]:hover,
-button[title="Open sidebar"]:hover,
-button[title="Close sidebar"]:hover {
-    opacity: 0.6 !important;
-}
-</style>
+        /* Subtle Sidebar Toggle Styling */
+        button[title="Toggle sidebar"],
+        button[title="Open sidebar"],
+        button[title="Close sidebar"] {{
+            background-color: transparent !important;
+            opacity: 0.2 !important;
+            transition: opacity 0.3s ease;
+            color: #fff !important;
+        }}
+        button[title="Toggle sidebar"]:hover,
+        button[title="Open sidebar"]:hover,
+        button[title="Close sidebar"]:hover {{
+            opacity: 0.6 !important;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
 # --- Sidebar Navigation ---
 with st.sidebar:
