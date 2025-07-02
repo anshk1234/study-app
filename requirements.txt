@@ -3,7 +3,4 @@ pandas
 numpy
 matplotlib
 scikit-learn
-opencv-python
-Pillow
 streamlit-option-menu
-minimal_pomodoro
