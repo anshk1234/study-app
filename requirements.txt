@@ -1,12 +1,6 @@
 streamlit
 pandas
 numpy
-datetime
-random
-json
-os
-base64
-pathlib
 matplotlib
 streamlit-option-menu
 minimal_pomodoro
