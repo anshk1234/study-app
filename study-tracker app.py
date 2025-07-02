@@ -8,7 +8,7 @@ import base64
 from pathlib import Path
 from streamlit_option_menu import option_menu
 from minimal_pomodoro import show_minimal_pomodoro
-
+import time
 # --- Page Config ---
 st.set_page_config(page_title="📘 Productivity Hub", page_icon="⏳", layout="centered")
 
@@ -18,9 +18,10 @@ def get_base64(file_path):
         return base64.b64encode(f.read()).decode()
 
 bg_image_path = Path("image.jpg")
-# Background Wallpaper Preserved + Sidebar Toggle Working
 if bg_image_path.exists():
     encoded_img = get_base64(bg_image_path)
+    time.sleep(0.2)  # ⏳ tiny pause before CSS injects
+
     st.markdown(
         f"""
         <style>
@@ -59,7 +60,7 @@ if bg_image_path.exists():
             color: #ffffffcc !important;
         }}
 
-        /* (Optional) Hide top Streamlit header */
+        /* (Optional) Hide top header */
         header[data-testid="stHeader"] {{
             display: none !important;
         }}
