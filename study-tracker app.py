@@ -25,49 +25,64 @@ if bg_image_path.exists():
     st.markdown(
         f"""
         <style>
-        html, body, .stApp {{
-            background-image: url("data:image/jpg;base64,{encoded_img}");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow-x: hidden;
-        }}
+/* 📸 Background Styling */
+html, body, .stApp {
+    background-image: url("data:image/jpg;base64,{encoded_img}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+}
 
-        [data-testid="stAppViewContainer"],
-        [data-testid="stToolbar"],
-        [data-testid="stVerticalBlock"],
-        .main, .block-container {{
-            background: transparent !important;
-            box-shadow: none !important;
-        }}
+/* 🔍 Transparent Sections */
+[data-testid="stAppViewContainer"],
+[data-testid="stToolbar"],
+[data-testid="stVerticalBlock"],
+.main, .block-container {
+    background: transparent !important;
+    box-shadow: none !important;
+}
 
-        section[data-testid="stSidebar"] {{
-            background-color: rgba(255, 255, 255, 0.08) !important;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            box-shadow: inset 0 0 10px #ffffff20, 0 0 20px #ffffff40;
-            border-right: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px 0 0 12px;
-        }}
+/* 📚 Stylish Sidebar */
+section[data-testid="stSidebar"] {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: inset 0 0 10px #ffffff20, 0 0 20px #ffffff40;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px 0 0 12px;
+}
 
-        section[data-testid="stSidebar"] * {{
-            background-color: transparent !important;
-            color: #ffffffcc !important;
-        }}
+section[data-testid="stSidebar"] * {
+    background-color: transparent !important;
+    color: #ffffffcc !important;
+}
 
-        /* (Optional) Hide top header */
-        header[data-testid="stHeader"] {{
-            display: none !important;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+/* 👤 Optional: Hide Top Streamlit Header */
+header[data-testid="stHeader"] {
+    display: none !important;
+}
+
+/* 🎛️ Fade Sidebar Toggle Button (not hidden, just quiet) */
+button[title="Toggle sidebar"],
+button[title="Open sidebar"],
+button[title="Close sidebar"] {
+    background-color: transparent !important;
+    opacity: 0.2 !important;
+    transition: opacity 0.3s ease;
+    color: #fff !important;
+}
+button[title="Toggle sidebar"]:hover,
+button[title="Open sidebar"]:hover,
+button[title="Close sidebar"]:hover {
+    opacity: 0.6 !important;
+}
+</style>
 
 # --- Sidebar Navigation ---
 with st.sidebar:
