@@ -4,3 +4,4 @@ numpy
 matplotlib
 scikit-learn
 streamlit-option-menu
+minimal-pomodoro
