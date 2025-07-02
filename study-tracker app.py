@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import time
 import datetime
 import pandas as pd
@@ -18,10 +19,12 @@ def get_base64(file_path):
     with open(file_path, "rb") as f:
         return base64.b64encode(f.read()).decode()
 
-bg_image_path = Path("image.jpg")  # Make sure this is your wallpaper's filename
+bg_image_path = Path("image.jpg")
 if bg_image_path.exists():
     encoded_img = get_base64(bg_image_path)
-    time.sleep(0.2)  # Tiny delay to stabilize layout on Streamlit Cloud
+    time.sleep(0.2)  # Ensure layout loads before CSS
+
+    # Inject CSS
     st.markdown(
         f"""
         <style>
@@ -53,6 +56,7 @@ if bg_image_path.exists():
             box-shadow: inset 0 0 10px #ffffff20, 0 0 20px #ffffff40;
             border-right: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 12px 0 0 12px;
+            transition: transform 0.4s ease;
         }}
 
         section[data-testid="stSidebar"] * {{
@@ -60,29 +64,51 @@ if bg_image_path.exists():
             color: #ffffffcc !important;
         }}
 
-        /* Hide top header */
         header[data-testid="stHeader"] {{
             display: none !important;
-        }}
-
-        /* Subtle Sidebar Toggle Styling */
-        button[title="Toggle sidebar"],
-        button[title="Open sidebar"],
-        button[title="Close sidebar"] {{
-            background-color: transparent !important;
-            opacity: 0.2 !important;
-            transition: opacity 0.3s ease;
-            color: #fff !important;
-        }}
-        button[title="Toggle sidebar"]:hover,
-        button[title="Open sidebar"]:hover,
-        button[title="Close sidebar"]:hover {{
-            opacity: 0.6 !important;
         }}
         </style>
         """,
         unsafe_allow_html=True
     )
+
+    # Inject custom toggle
+    components.html("""
+        <style>
+        #custom-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 99999;
+            font-size: 24px;
+            background: rgba(255,255,255,0.08);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 0 10px #ffffff30;
+            transition: background 0.3s ease;
+        }
+        #custom-toggle:hover {
+            background: rgba(255,255,255,0.15);
+        }
+        </style>
+
+        <button id="custom-toggle">☰</button>
+        <script>
+        const btn = document.getElementById("custom-toggle")
+        btn.onclick = () => {
+            let sb = parent.document.querySelector('section[data-testid="stSidebar"]')
+            if (!sb) return
+            const collapsed = sb.style.transform.includes("-100")
+            sb.style.transform = collapsed ? "translateX(0)" : "translateX(-100%)"
+            sb.style.visibility = collapsed ? "visible" : "hidden"
+        }
+        </script>
+    """, height=0)
 
 # --- Sidebar Navigation ---
 with st.sidebar:
@@ -134,7 +160,6 @@ def save_todos(todos):
 # --- Sections ---
 if section == "✅ To-Do List":
     st.title("✅ To-Do List")
-
     if "todos" not in st.session_state:
         st.session_state.todos = load_todos()
 
