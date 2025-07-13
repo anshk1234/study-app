@@ -40,44 +40,65 @@ bg_path = Path("image.jpg")
 if bg_path.exists():
     encoded_img = get_base64(bg_path)
     st.markdown(
-    f"""
+    """
     <style>
-    html, body {{
+    html, body {
         height: 100%;
         margin: 0;
         padding: 0;
-    }}
+    }
 
-    .stApp {{
-        background-image: url("data:image/jpg;base64,{encoded_img}");
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
+    .stApp {
         min-height: 100vh;
         width: 100vw;
         overflow-x: hidden;
-    }}
+    }
 
+    /* App base styling */
     [data-testid="stAppViewContainer"],
-    .main, .block-container {{
+    .main, .block-container {
         background-color: transparent !important;
-        box-shadow: none !important;
-    }}
+    }
 
-    section[data-testid="stSidebar"] {{
-        background-color: rgba(255,255,255,0.08) !important;
+    /* Translucent Sidebar */
+    section[data-testid="stSidebar"] {
+        background-color: rgba(255, 255, 255, 0.08) !important;
         backdrop-filter: blur(12px);
         border-right: 1px solid rgba(255,255,255,0.2);
         border-radius: 12px 0 0 12px;
-    }}
+    }
 
-    section[data-testid="stSidebar"] * {{
+    section[data-testid="stSidebar"] * {
         background-color: transparent !important;
         color: #ffffffcc !important;
-    }}
+    }
+
+    /* ✅ Sidebar Toggle Button Fully Restored */
+    button[title="Toggle sidebar"] {
+        position: fixed !important;
+        top: 12px;
+        left: 12px;
+        z-index: 9999 !important;
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        background-color: rgba(255,255,255,0.25);
+        border: none;
+        border-radius: 8px;
+        padding: 6px 12px;
+        color: white;
+        font-weight: bold;
+        transition: 0.3s ease-in-out;
+    }
+
+    button[title="Toggle sidebar"]:hover {
+        background-color: rgba(255,255,255,0.4);
+        cursor: pointer;
+    }
     </style>
-    """, unsafe_allow_html=True
+    """,
+    unsafe_allow_html=True
 )
 # --- Sidebar Navigation ---
 with st.sidebar:
