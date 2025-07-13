@@ -42,7 +42,13 @@ if bg_path.exists():
     st.markdown(
     f"""
     <style>
-    html, body, .stApp {{
+    html, body {{
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }}
+
+    .stApp {{
         background-image: url("data:image/jpg;base64,{encoded_img}");
         background-size: cover;
         background-position: center;
@@ -50,14 +56,11 @@ if bg_path.exists():
         background-attachment: fixed;
         min-height: 100vh;
         width: 100vw;
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
+        overflow: hidden;
     }}
 
-    [data-testid="stAppViewContainer"],
-    .main, .block-container {{
-        background: transparent !important;
+    .main, .block-container, [data-testid="stAppViewContainer"] {{
+        background-color: transparent !important;
     }}
 
     section[data-testid="stSidebar"] {{
@@ -71,8 +74,15 @@ if bg_path.exists():
         background-color: transparent !important;
         color: #ffffffcc !important;
     }}
+
+    /* Optional: remove sidebar toggle */
+    button[title="Toggle sidebar"],
+    [data-testid*="collapsed-control"] {{
+        display: none !important;
+    }}
     </style>
-    """, unsafe_allow_html=True
+    """,
+    unsafe_allow_html=True
 )
 # --- Sidebar Navigation ---
 with st.sidebar:
