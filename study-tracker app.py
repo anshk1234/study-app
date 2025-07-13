@@ -11,20 +11,20 @@ from streamlit_option_menu import option_menu
 from minimal_pomodoro import show_minimal_pomodoro
 from streamlit_lottie import st_lottie
 
-# --- Page Config ---
+# Page setup
 st.set_page_config(page_title="📘 Productivity Hub", page_icon="⏳", layout="centered")
 
-# --- Load Lottie Animation from Local File
+# Load local Lottie file
 def load_lottiefile(filepath):
     with open(filepath, "r", encoding="utf-8") as f:
         return json.load(f)
 
-# --- Splash Animation Logic
-if 'show_intro' not in st.session_state:
+# Splash animation on first launch
+if "show_intro" not in st.session_state:
     st.session_state.show_intro = True
 
 if st.session_state.show_intro:
-    lottie_intro = load_lottiefile("animation.json")  # ✅ Use your downloaded file here
+    lottie_intro = load_lottiefile("animation.json")
     placeholder = st.empty()
     with placeholder.container():
         st.markdown("<h1 style='text-align:center;'>Welcome to Productivity Hub!</h1>", unsafe_allow_html=True)
@@ -33,7 +33,7 @@ if st.session_state.show_intro:
     placeholder.empty()
     st.session_state.show_intro = False
 
-# --- Background Wallpaper ---
+# Background wallpaper
 def get_base64(file_path):
     with open(file_path, "rb") as f:
         return base64.b64encode(f.read()).decode()
@@ -63,15 +63,22 @@ if bg_image_path.exists():
             color: #ffffffcc !important;
             background-color: transparent !important;
         }}
-        header[data-testid="stHeader"], button[title="Toggle sidebar"] {{
-            display: none !important;
+        button[title="Toggle sidebar"] {{
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 9999;
+            background-color: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 8px;
+            padding: 6px 12px;
         }}
         </style>
         """,
         unsafe_allow_html=True
     )
 
-# --- Sidebar Navigation ---
+# Sidebar menu
 with st.sidebar:
     section = option_menu(
         menu_title="📘 Menu",
@@ -80,11 +87,11 @@ with st.sidebar:
         default_index=0
     )
 
-# --- File Paths ---
+# File paths
 DATA_FILE = "study_log.csv"
 TODO_FILE = "todo_data.json"
 
-# --- Helper Functions ---
+# Helper functions
 def load_data():
     try:
         return pd.read_csv(DATA_FILE)
@@ -109,7 +116,7 @@ def save_todos(todos):
     with open(TODO_FILE, "w") as file:
         json.dump(todos, file)
 
-# --- Sections ---
+# Main sections
 if section == "✅ To-Do List":
     st.title("✅ To-Do List")
     if "todos" not in st.session_state:
@@ -184,8 +191,8 @@ elif section == "💬 Motivation":
     quotes = [
         "Believe you can and you're halfway there. – Theodore Roosevelt",
         "Success is the sum of small efforts repeated daily. – James Clear",
-        "Don't watch the clock; do what it does. Keep going. – Sam Levenson",
         "Discipline is choosing between what you want now and what you want most. – Abraham Lincoln",
+        "Don’t watch the clock; do what it does. Keep going. – Sam Levenson",
         "You don’t have to be great to start, but you have to start to be great. – Zig Ziglar"
     ]
     st.markdown(f"🎯 *{random.choice(quotes)}*")
