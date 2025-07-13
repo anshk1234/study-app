@@ -42,25 +42,6 @@ if bg_path.exists():
     st.markdown(
     """
     <style>
-    html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-    }
-
-    .stApp {
-        min-height: 100vh;
-        width: 100vw;
-        overflow-x: hidden;
-    }
-
-    /* App base styling */
-    [data-testid="stAppViewContainer"],
-    .main, .block-container {
-        background-color: transparent !important;
-    }
-
-    /* Translucent Sidebar */
     section[data-testid="stSidebar"] {
         background-color: rgba(255, 255, 255, 0.08) !important;
         backdrop-filter: blur(12px);
@@ -71,30 +52,6 @@ if bg_path.exists():
     section[data-testid="stSidebar"] * {
         background-color: transparent !important;
         color: #ffffffcc !important;
-    }
-
-    /* ✅ Sidebar Toggle Button Fully Restored */
-    button[title="Toggle sidebar"] {
-        position: fixed !important;
-        top: 12px;
-        left: 12px;
-        z-index: 9999 !important;
-        display: inline-block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-        background-color: rgba(255,255,255,0.25);
-        border: none;
-        border-radius: 8px;
-        padding: 6px 12px;
-        color: white;
-        font-weight: bold;
-        transition: 0.3s ease-in-out;
-    }
-
-    button[title="Toggle sidebar"]:hover {
-        background-color: rgba(255,255,255,0.4);
-        cursor: pointer;
     }
     </style>
     """,
