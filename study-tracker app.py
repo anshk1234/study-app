@@ -8,77 +8,105 @@ import base64
 import time
 from pathlib import Path
 from streamlit_option_menu import option_menu
-from minimal_pomodoro import show_minimal_pomodoro
 from streamlit_lottie import st_lottie
+from minimal_pomodoro import show_minimal_pomodoro
 
-# Page setup
 st.set_page_config(page_title="📘 Productivity Hub", page_icon="⏳", layout="centered")
 
-# Load local Lottie file
+# --- Splash Animation ---
 def load_lottiefile(filepath):
     with open(filepath, "r", encoding="utf-8") as f:
         return json.load(f)
 
-# Splash animation on first launch
 if "show_intro" not in st.session_state:
     st.session_state.show_intro = True
 
 if st.session_state.show_intro:
     lottie_intro = load_lottiefile("animation.json")
-    placeholder = st.empty()
-    with placeholder.container():
+    splash = st.empty()
+    with splash.container():
         st.markdown("<h1 style='text-align:center;'>Welcome to Productivity Hub!</h1>", unsafe_allow_html=True)
         st_lottie(lottie_intro, height=280, speed=1.2, loop=False)
         time.sleep(3)
-    placeholder.empty()
+    splash.empty()
     st.session_state.show_intro = False
 
-# Background wallpaper
+# --- Background Styling ---
 def get_base64(file_path):
     with open(file_path, "rb") as f:
         return base64.b64encode(f.read()).decode()
 
-bg_image_path = Path("image.jpg")
-if bg_image_path.exists():
-    encoded_img = get_base64(bg_image_path)
+bg_path = Path("image.jpg")
+if bg_path.exists():
+    encoded_img = get_base64(bg_path)
     st.markdown(
-        f"""
-        <style>
-        html, body, .stApp {{
-            background-image: url("data:image/jpg;base64,{encoded_img}");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }}
-        [data-testid="stAppViewContainer"], .main, .block-container {{
-            background: transparent !important;
-        }}
-        section[data-testid="stSidebar"] {{
-            background-color: rgba(255,255,255,0.08) !important;
-            backdrop-filter: blur(12px);
-            border-radius: 12px 0 0 12px;
-            border-right: 1px solid rgba(255,255,255,0.2);
-        }}
-        section[data-testid="stSidebar"] * {{
-            color: #ffffffcc !important;
-            background-color: transparent !important;
-        }}
-        button[title="Toggle sidebar"] {{
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            z-index: 9999;
-            background-color: rgba(255,255,255,0.2);
-            border: none;
-            border-radius: 8px;
-            padding: 6px 12px;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+    f"""
+    <style>
+    html, body, .stApp {{
+        background-image: url("data:image/jpg;base64,{encoded_img}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        overflow-x: hidden;
+    }}
 
-# Sidebar menu
+    /* Transparent base layout */
+    [data-testid="stAppViewContainer"],
+    [data-testid="stToolbar"],
+    [data-testid="stVerticalBlock"],
+    .main, .block-container {{
+        background: transparent !important;
+        box-shadow: none !important;
+    }}
+
+    /* ✨ Translucent Sidebar with Blur */
+    section[data-testid="stSidebar"] {{
+        background-color: rgba(255, 255, 255, 0.08) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: inset 0 0 10px #ffffff20, 0 0 20px #ffffff40;
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px 0 0 12px;
+    }}
+
+    /* Match inner items for clean look */
+    section[data-testid="stSidebar"] * {{
+        background-color: transparent !important;
+        color: #ffffffcc !important;
+    }}
+
+    /* 🚫 Arrow / toggle removal (all cases) */
+    header[data-testid="stHeader"],
+    button[data-testid="collapsed-control"],
+    div[data-testid="collapsed-control"],
+    [data-testid*="collapsed-control"],
+    [title*="sidebar"],
+    [aria-label*="sidebar"],
+    [data-testid*="toggle"],
+    button[title="Toggle sidebar"],
+    button[title="Close sidebar"],
+    button[title="Open sidebar"] {{
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        pointer-events: none !important;
+        position: absolute !important;
+        z-index: -9999 !important;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# --- Sidebar Navigation ---
 with st.sidebar:
     section = option_menu(
         menu_title="📘 Menu",
@@ -87,11 +115,11 @@ with st.sidebar:
         default_index=0
     )
 
-# File paths
+# --- File Paths ---
 DATA_FILE = "study_log.csv"
 TODO_FILE = "todo_data.json"
 
-# Helper functions
+# --- Helpers ---
 def load_data():
     try:
         return pd.read_csv(DATA_FILE)
@@ -108,15 +136,15 @@ def save_study_entry(date, task, hours):
 
 def load_todos():
     if os.path.exists(TODO_FILE):
-        with open(TODO_FILE, "r") as file:
-            return json.load(file)
+        with open(TODO_FILE, "r") as f:
+            return json.load(f)
     return []
 
 def save_todos(todos):
-    with open(TODO_FILE, "w") as file:
-        json.dump(todos, file)
+    with open(TODO_FILE, "w") as f:
+        json.dump(todos, f)
 
-# Main sections
+# --- Sections ---
 if section == "✅ To-Do List":
     st.title("✅ To-Do List")
     if "todos" not in st.session_state:
@@ -156,7 +184,6 @@ elif section == "📚 Study Tracker":
     df = load_data()
     df["date"] = pd.to_datetime(df["date"], errors="coerce").dt.date
     today_logs = df[df["date"] == today]
-
     if not today_logs.empty:
         st.table(today_logs[["task", "hours"]].sort_values(by="hours", ascending=False))
     else:
@@ -191,8 +218,8 @@ elif section == "💬 Motivation":
     quotes = [
         "Believe you can and you're halfway there. – Theodore Roosevelt",
         "Success is the sum of small efforts repeated daily. – James Clear",
+        "Don't watch the clock; do what it does. Keep going. – Sam Levenson",
         "Discipline is choosing between what you want now and what you want most. – Abraham Lincoln",
-        "Don’t watch the clock; do what it does. Keep going. – Sam Levenson",
         "You don’t have to be great to start, but you have to start to be great. – Zig Ziglar"
     ]
     st.markdown(f"🎯 *{random.choice(quotes)}*")
