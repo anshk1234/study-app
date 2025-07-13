@@ -5,40 +5,21 @@ import random
 import json
 import os
 import base64
-import time
 from pathlib import Path
 from streamlit_option_menu import option_menu
-from streamlit_lottie import st_lottie
 from minimal_pomodoro import show_minimal_pomodoro
 
+# --- Page Config ---
 st.set_page_config(page_title="📘 Productivity Hub", page_icon="⏳", layout="centered")
 
-# --- Splash Animation ---
-def load_lottiefile(filepath):
-    with open(filepath, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-if "show_intro" not in st.session_state:
-    st.session_state.show_intro = True
-
-if st.session_state.show_intro:
-    lottie_intro = load_lottiefile("animation.json")
-    splash = st.empty()
-    with splash.container():
-        st.markdown("<h1 style='text-align:center;'>Welcome to Productivity Hub!</h1>", unsafe_allow_html=True)
-        st_lottie(lottie_intro, height=280, speed=1.2, loop=False)
-        time.sleep(3)
-    splash.empty()
-    st.session_state.show_intro = False
-
-# --- Background Styling ---
+# --- Background Wallpaper (from local image) ---
 def get_base64(file_path):
     with open(file_path, "rb") as f:
         return base64.b64encode(f.read()).decode()
 
-bg_path = Path("image.jpg")
-if bg_path.exists():
-    encoded_img = get_base64(bg_path)
+bg_image_path = Path("image.jpg")
+if bg_image_path.exists():
+    encoded_img = get_base64(bg_image_path)
     st.markdown(
     f"""
     <style>
@@ -105,20 +86,30 @@ if bg_path.exists():
     """,
     unsafe_allow_html=True
 )
+
 # --- Sidebar Navigation ---
 with st.sidebar:
     section = option_menu(
         menu_title="📘 Menu",
         options=["✅ To-Do List", "📚 Study Tracker", "⏱️ Pomodoro Timer", "📈 Reports", "💬 Motivation"],
         icons=["check2-square", "book", "hourglass-split", "bar-chart", "chat-left-dots"],
-        default_index=0
+        default_index=0,
+        styles={
+            "container": {"padding": "0", "background-color": "transparent"},
+            "icon": {"color": "inherit", "font-size": "20px"},
+            "nav-link": {
+                "color": "inherit", "font-size": "18px", "text-align": "left", "padding": "10px 12px",
+                "--hover-color": "rgba(255,255,255,0.05)"
+            },
+            "nav-link-selected": {"background-color": "#1a1a1a"},
+        }
     )
 
 # --- File Paths ---
 DATA_FILE = "study_log.csv"
 TODO_FILE = "todo_data.json"
 
-# --- Helpers ---
+# --- Helper Functions ---
 def load_data():
     try:
         return pd.read_csv(DATA_FILE)
@@ -135,17 +126,18 @@ def save_study_entry(date, task, hours):
 
 def load_todos():
     if os.path.exists(TODO_FILE):
-        with open(TODO_FILE, "r") as f:
-            return json.load(f)
+        with open(TODO_FILE, "r") as file:
+            return json.load(file)
     return []
 
 def save_todos(todos):
-    with open(TODO_FILE, "w") as f:
-        json.dump(todos, f)
+    with open(TODO_FILE, "w") as file:
+        json.dump(todos, file)
 
 # --- Sections ---
 if section == "✅ To-Do List":
     st.title("✅ To-Do List")
+
     if "todos" not in st.session_state:
         st.session_state.todos = load_todos()
 
@@ -183,6 +175,7 @@ elif section == "📚 Study Tracker":
     df = load_data()
     df["date"] = pd.to_datetime(df["date"], errors="coerce").dt.date
     today_logs = df[df["date"] == today]
+
     if not today_logs.empty:
         st.table(today_logs[["task", "hours"]].sort_values(by="hours", ascending=False))
     else:
