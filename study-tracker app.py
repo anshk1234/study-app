@@ -5,12 +5,33 @@ import random
 import json
 import os
 import base64
+import time
 from pathlib import Path
 from streamlit_option_menu import option_menu
 from minimal_pomodoro import show_minimal_pomodoro
+from streamlit_lottie import st_lottie
 
 # --- Page Config ---
 st.set_page_config(page_title="📘 Productivity Hub", page_icon="⏳", layout="centered")
+
+# --- Load Lottie Animation from Local File
+def load_lottiefile(filepath):
+    with open(filepath, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+# --- Splash Animation Logic
+if 'show_intro' not in st.session_state:
+    st.session_state.show_intro = True
+
+if st.session_state.show_intro:
+    lottie_intro = load_lottiefile("animation.json")  # ✅ Use your downloaded file here
+    placeholder = st.empty()
+    with placeholder.container():
+        st.markdown("<h1 style='text-align:center;'>Welcome to Productivity Hub!</h1>", unsafe_allow_html=True)
+        st_lottie(lottie_intro, height=280, speed=1.2, loop=False)
+        time.sleep(3)
+    placeholder.empty()
+    st.session_state.show_intro = False
 
 # --- Background Wallpaper ---
 def get_base64(file_path):
@@ -27,42 +48,24 @@ if bg_image_path.exists():
             background-image: url("data:image/jpg;base64,{encoded_img}");
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
             background-attachment: fixed;
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow-x: hidden;
         }}
-        [data-testid="stAppViewContainer"],
-        [data-testid="stToolbar"],
-        [data-testid="stVerticalBlock"],
-        .main, .block-container {{
+        [data-testid="stAppViewContainer"], .main, .block-container {{
             background: transparent !important;
-            box-shadow: none !important;
         }}
         section[data-testid="stSidebar"] {{
-            background-color: rgba(255, 255, 255, 0.08) !important;
+            background-color: rgba(255,255,255,0.08) !important;
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            box-shadow: inset 0 0 10px #ffffff20, 0 0 20px #ffffff40;
-            border-right: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 12px 0 0 12px;
+            border-right: 1px solid rgba(255,255,255,0.2);
         }}
         section[data-testid="stSidebar"] * {{
-            background-color: transparent !important;
             color: #ffffffcc !important;
-        }}
-        header[data-testid="stHeader"] {{
             background-color: transparent !important;
-            box-shadow: none !important;
-            height: 0px !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            border: none !important;
         }}
-        
+        header[data-testid="stHeader"], button[title="Toggle sidebar"] {{
+            display: none !important;
+        }}
         </style>
         """,
         unsafe_allow_html=True
@@ -74,16 +77,7 @@ with st.sidebar:
         menu_title="📘 Menu",
         options=["✅ To-Do List", "📚 Study Tracker", "⏱️ Pomodoro Timer", "📈 Reports", "💬 Motivation"],
         icons=["check2-square", "book", "hourglass-split", "bar-chart", "chat-left-dots"],
-        default_index=0,
-        styles={
-            "container": {"padding": "0", "background-color": "transparent"},
-            "icon": {"color": "inherit", "font-size": "20px"},
-            "nav-link": {
-                "color": "inherit", "font-size": "18px", "text-align": "left", "padding": "10px 12px",
-                "--hover-color": "rgba(255,255,255,0.05)"
-            },
-            "nav-link-selected": {"background-color": "#1a1a1a"},
-        }
+        default_index=0
     )
 
 # --- File Paths ---
