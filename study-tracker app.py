@@ -56,15 +56,20 @@ if bg_path.exists():
         background-attachment: fixed;
         min-height: 100vh;
         width: 100vw;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: auto;
     }}
 
-    .main, .block-container, [data-testid="stAppViewContainer"] {{
+    /* Transparent App Layout */
+    [data-testid="stAppViewContainer"],
+    .main, .block-container {{
         background-color: transparent !important;
+        box-shadow: none !important;
     }}
 
+    /* ✨ Translucent Sidebar with Blur */
     section[data-testid="stSidebar"] {{
-        background-color: rgba(255,255,255,0.08) !important;
+        background-color: rgba(255, 255, 255, 0.08) !important;
         backdrop-filter: blur(12px);
         border-right: 1px solid rgba(255,255,255,0.2);
         border-radius: 12px 0 0 12px;
@@ -75,10 +80,39 @@ if bg_path.exists():
         color: #ffffffcc !important;
     }}
 
-    /* Optional: remove sidebar toggle */
-    button[title="Toggle sidebar"],
+    /* 🔥 Force Toggle Button to Appear */
+    button[title="Toggle sidebar"] {{
+        position: fixed !important;
+        top: 12px;
+        left: 12px;
+        z-index: 9999 !important;
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        background-color: rgba(255,255,255,0.25);
+        border: none;
+        border-radius: 8px;
+        padding: 6px 12px;
+        color: white;
+        font-weight: bold;
+        transition: 0.3s ease-in-out;
+    }}
+
+    button[title="Toggle sidebar"]:hover {{
+        background-color: rgba(255,255,255,0.4);
+        cursor: pointer;
+    }}
+
+    /* Clean up any hidden state from previous overrides */
     [data-testid*="collapsed-control"] {{
-        display: none !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        width: auto !important;
+        height: auto !important;
+        position: relative !important;
+        z-index: auto !important;
     }}
     </style>
     """,
