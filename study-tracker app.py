@@ -26,7 +26,7 @@ if st.session_state.show_intro:
     splash = st.empty()
     with splash.container():
         st.markdown("<h1 style='text-align:center;'>Welcome to Productivity Hub!</h1>", unsafe_allow_html=True)
-        st_lottie(lottie_intro, height=280, speed=1.2, loop=False)
+        st_lottie(lottie_intro, height=280, speed=1.0, loop=False)
         time.sleep(3)
     splash.empty()
     st.session_state.show_intro = False
