@@ -31,6 +31,9 @@ if st.session_state.show_intro:
     splash.empty()
     st.session_state.show_intro = False
 
+from login import require_login
+require_login()
+
 # --- Background Styling ---
 def get_base64(file_path):
     with open(file_path, "rb") as f:
@@ -86,6 +89,7 @@ if bg_path.exists():
         """,
         unsafe_allow_html=True
     )
+
 
 # --- Sidebar Navigation ---
 with st.sidebar:
