@@ -1,4 +1,0 @@
-streamlit
-pandas
-streamlit-option-menu
-streamlit-lottie
